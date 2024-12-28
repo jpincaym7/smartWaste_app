@@ -1,0 +1,140 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block extra_head %}
+<script src="https://cdn.maptiler.com/maplibre-gl-js/v2.4.0/maplibre-gl.js"></script>
+<link href="https://cdn.maptiler.com/maplibre-gl-js/v2.4.0/maplibre-gl.css" rel="stylesheet" />
+<link rel="stylesheet" href="{% static 'css/reports.css' %}">
+{% endblock %}
+{% block title %}Crear Reporte de Basura{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Stepper Progress -->
+    <div class="stepper-progress mb-8">
+        <div class="stepper-track"></div>
+        <div class="stepper-steps">
+            <div class="stepper-step active" data-step="1">
+                <div class="step-indicator">1</div>
+                <span class="step-label">Ubicación</span>
+            </div>
+            <div class="stepper-step" data-step="2">
+                <div class="step-indicator">2</div>
+                <span class="step-label">Detalles</span>
+            </div>
+            <div class="stepper-step" data-step="3">
+                <div class="step-indicator">3</div>
+                <span class="step-label">Evidencia</span>
+            </div>
+            <div class="stepper-step" data-step="4">
+                <div class="step-indicator">4</div>
+                <span class="step-label">Confirmación</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Container -->
+    <form id="reportForm" class="bg-white rounded-lg shadow-lg">
+        <!-- Step 1: Location -->
+        <div class="step-content active" data-step="1">
+            <div class="p-6">
+                <h2 class="text-2xl font-bold mb-4">Selecciona la ubicación</h2>
+                <div id="map" class="h-96 rounded-lg mb-4"></div>
+                <input type="hidden" name="latitude" id="latitude" required>
+                <input type="hidden" name="longitude" id="longitude" required>
+                <div id="locationInfo" class="text-sm text-gray-600 mb-4"></div>
+            </div>
+        </div>
+
+        <!-- Step 2: Details -->
+        <div class="step-content" data-step="2">
+            <div class="p-6">
+                <h2 class="text-2xl font-bold mb-4">Detalles del reporte</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                        <textarea 
+                            name="description" 
+                            rows="4" 
+                            class="form-textarea w-full rounded-lg"
+                            placeholder="Describe el problema..."
+                            required></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Severidad</label>
+                        <select name="severity" class="form-select w-full rounded-lg" required>
+                            <option value="">Selecciona la severidad</option>
+                            {% for value, label in severity_choices  %}
+                                <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="is_recurÑring" class="form-checkbox">
+                            <span class="text-sm text-gray-700">Es un problema recurrente</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Evidence -->
+        <div class="step-content" data-step="3">
+            <div class="p-6">
+                <h2 class="text-2xl font-bold mb-4">Evidencia fotográfica</h2>
+                <div class="space-y-4">
+                    <div class="image-upload-zone">
+                        <input type="file" name="image" id="imageInput" accept="image/*" capture="environment" class="hidden">
+                        <div class="image-preview hidden">
+                            <img src="" alt="Preview" class="max-h-64 mx-auto">
+                        </div>
+                        <div class="upload-placeholder">
+                            <i class="fas fa-camera text-4xl mb-2"></i>
+                            <p>Toca para tomar una foto o subir imagen</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Confirmation -->
+        <div class="step-content" data-step="4">
+            <div class="p-6">
+                <h2 class="text-2xl font-bold mb-4">Confirma tu reporte</h2>
+                <div class="space-y-4">
+                    <div class="report-summary">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="px-6 py-4 bg-gray-50 rounded-b-lg flex justify-between">
+            <button type="button" class="btn-prev hidden">
+                <i class="fas fa-arrow-left mr-2"></i>Anterior
+            </button>
+            <button type="button" class="btn-next">
+                Siguiente<i class="fas fa-arrow-right ml-2"></i>
+            </button>
+            <button type="submit" class="btn-submit hidden">
+                <i class="fas fa-check mr-2"></i>Enviar Reporte
+            </button>
+        </div>
+    </form>
+
+    <!-- Recent Reports Section -->
+    <div class="mt-8">
+        <h3 class="text-xl font-bold mb-4">Reportes Recientes</h3>
+        <div id="reportsList" class="space-y-4">
+            <!-- Filled dynamically -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+    const MAPTILER_KEY = '{{ maptiler_key }}';
+</script>
+<script src="{% static 'js/reports.js' %}"></script>
+{% endblock %}

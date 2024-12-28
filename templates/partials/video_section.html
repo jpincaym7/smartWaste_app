@@ -1,0 +1,405 @@
+{% comment %} templates/components/video_section.html {% endcomment %}
+
+<style>
+    .float-video-btn {
+        position: fixed;
+        right: -2px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #10B981;
+        color: white;
+        padding: 1rem 0.75rem;
+        border-radius: 1rem 0 0 1rem;
+        box-shadow: -2px 2px 12px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(8px);
+    }
+
+    .float-video-btn:active {
+        transform: translateY(-50%) scale(0.95);
+    }
+
+    .video-modal {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        height: 100vh;
+        background: white;
+        z-index: 1001;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow-y: auto;
+        max-width: 100%;
+        box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+        overscroll-behavior: contain;
+    }
+
+    @media (min-width: 640px) {
+        .video-modal {
+            max-width: 400px;
+        }
+    }
+
+    .video-modal.active {
+        right: 0;
+    }
+
+    .video-modal.dragging {
+        transition: none;
+    }
+
+    .video-grid {
+        display: grid;
+        gap: 1rem;
+        padding: 1rem;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+
+    .video-card {
+        background: #f8f9fa;
+        border-radius: 1rem;
+        overflow: hidden;
+        transition: all 0.2s ease;
+        position: relative;
+        touch-action: manipulation;
+    }
+
+    .video-thumbnail-container {
+        position: relative;
+        padding-top: 56.25%;
+        background: #e5e7eb;
+        overflow: hidden;
+    }
+
+    .video-thumbnail {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transition: opacity 0.3s ease;
+    }
+
+    .video-thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .video-card:hover .video-thumbnail img {
+        transform: scale(1.05);
+    }
+
+    .video-player {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+        background: #000;
+    }
+
+    .video-player.active {
+        display: block;
+    }
+
+    .video-player video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .video-play-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 3rem;
+        opacity: 0.9;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+    .video-play-icon:hover {
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    .close-video-btn {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 2rem;
+        height: 2rem;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    .close-video-btn.active {
+        display: flex;
+    }
+
+    .pull-indicator {
+        position: absolute;
+        top: -60px;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #10B981;
+        transition: transform 0.2s ease;
+    }
+
+    .loading-spinner {
+        display: none;
+        width: 24px;
+        height: 24px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #10B981;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+
+<!-- Botón flotante -->
+<button class="float-video-btn" id="openVideoBtn">
+    <i class="fas fa-play-circle text-xl"></i>
+</button>
+
+<!-- Modal de videos -->
+<div class="video-modal" id="videoModal">
+    <div class="pull-indicator">
+        <div class="loading-spinner" id="loadingSpinner"></div>
+        <span id="pullText">Desliza para actualizar</span>
+    </div>
+
+    <div class="sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center">
+        <h2 class="text-lg font-semibold">Videos Educativos</h2>
+        <button id="closeVideoBtn" class="text-gray-500 hover:text-gray-700 p-2">
+            <i class="fas fa-times text-xl"></i>
+        </button>
+    </div>
+
+    <div class="video-grid" id="videoGrid">
+        {% for video in education_videos %}
+        <div class="video-card shadow-sm" data-video-id="{{ forloop.counter }}">
+            <div class="video-thumbnail-container">
+                <div class="video-thumbnail">
+                    <img loading="lazy" src="{{ video.thumbnail_url }}" alt="{{ video.title }}">
+                    <div class="video-play-icon">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                </div>
+                <div class="video-player" id="player-{{ forloop.counter }}">
+                    <video playsinline 
+                           data-video-url="{{ video.video_url }}"
+                           controlsList="nodownload"
+                           oncontextmenu="return false;">
+                        <source src="" type="video/mp4">
+                        Tu navegador no soporta el elemento de video.
+                    </video>
+                    <button class="close-video-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-3">
+                <h3 class="font-medium text-sm mb-1">{{ video.title }}</h3>
+                <p class="text-xs text-gray-600">{{ video.duration }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-8 text-gray-500">
+            <i class="fas fa-video mb-2 text-2xl"></i>
+            <p>No hay videos disponibles</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Clase para manejar el estado y comportamiento de cada video
+    class VideoHandler {
+        constructor(videoCard) {
+            this.videoCard = videoCard;
+            this.videoId = videoCard.dataset.videoId;
+            this.playerContainer = videoCard.querySelector('.video-player');
+            this.video = this.playerContainer.querySelector('video');
+            this.thumbnail = videoCard.querySelector('.video-thumbnail');
+            this.playIcon = videoCard.querySelector('.video-play-icon');
+            this.closeBtn = videoCard.querySelector('.close-video-btn');
+            this.videoUrl = this.video.dataset.videoUrl;
+            
+            this.setupEventListeners();
+        }
+
+        setupEventListeners() {
+            this.playIcon.addEventListener('click', () => this.play());
+            this.closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.stop();
+            });
+            this.video.addEventListener('ended', () => this.stop());
+        }
+
+        play() {
+            // Detener otros videos que estén reproduciéndose
+            document.querySelectorAll('.video-player.active').forEach(player => {
+                if (player !== this.playerContainer) {
+                    const videoId = player.closest('.video-card').dataset.videoId;
+                    videoHandlers[videoId].stop();
+                }
+            });
+
+            // Activar este video
+            this.video.src = this.videoUrl;
+            this.playerContainer.classList.add('active');
+            this.closeBtn.classList.add('active');
+            this.thumbnail.style.opacity = '0';
+            
+            // Reproducir después de un pequeño delay para permitir la transición
+            setTimeout(() => {
+                this.video.play().catch(error => {
+                    console.error('Error al reproducir el video:', error);
+                    this.stop();
+                });
+            }, 50);
+        }
+
+        stop() {
+            this.video.pause();
+            this.video.currentTime = 0;
+            this.video.src = '';
+            this.playerContainer.classList.remove('active');
+            this.closeBtn.classList.remove('active');
+            this.thumbnail.style.opacity = '1';
+        }
+    }
+
+    // Inicialización y gestión del modal
+    const openBtn = document.getElementById('openVideoBtn');
+    const closeBtn = document.getElementById('closeVideoBtn');
+    const modal = document.getElementById('videoModal');
+    const pullIndicator = document.querySelector('.pull-indicator');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const pullText = document.getElementById('pullText');
+
+    // Crear manejadores para todos los videos
+    const videoHandlers = {};
+    document.querySelectorAll('.video-card').forEach(card => {
+        const videoId = card.dataset.videoId;
+        videoHandlers[videoId] = new VideoHandler(card);
+    });
+
+    let startY = 0;
+    let currentY = 0;
+    let isDragging = false;
+    let startX = 0;
+    let currentX = 0;
+
+    // Gestión de modal principal
+    openBtn.addEventListener('click', () => {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+
+    function closeMainModal() {
+        // Detener todos los videos al cerrar el modal
+        Object.values(videoHandlers).forEach(handler => handler.stop());
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    closeBtn.addEventListener('click', closeMainModal);
+
+    // Gestos táctiles para el modal
+    modal.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        isDragging = true;
+        modal.classList.add('dragging');
+    }, { passive: true });
+
+    modal.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+
+        currentX = e.touches[0].clientX;
+        currentY = e.touches[0].clientY;
+        
+        const diffX = startX - currentX;
+        const diffY = currentY - startY;
+
+        if (Math.abs(diffX) > Math.abs(diffY)) {
+            if (diffX < 0) {
+                modal.style.right = `${diffX}px`;
+            }
+        } else if (modal.scrollTop === 0 && diffY > 0) {
+            pullIndicator.style.transform = `translateY(${diffY/2}px)`;
+            if (diffY > 120) {
+                pullText.textContent = 'Suelta para actualizar';
+            }
+        }
+    }, { passive: true });
+
+    modal.addEventListener('touchend', async (e) => {
+        if (!isDragging) return;
+        
+        const diffX = startX - currentX;
+        const diffY = currentY - startY;
+
+        modal.classList.remove('dragging');
+        modal.style.right = '';
+        isDragging = false;
+
+        if (Math.abs(diffX) > Math.abs(diffY)) {
+            if (diffX < -100) {
+                closeMainModal();
+            }
+        } else if (diffY > 120 && modal.scrollTop === 0) {
+            loadingSpinner.style.display = 'block';
+            pullText.textContent = 'Actualizando...';
+            
+            try {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            } finally {
+                pullIndicator.style.transform = '';
+                loadingSpinner.style.display = 'none';
+                pullText.textContent = 'Desliza para actualizar';
+            }
+        } else {
+            pullIndicator.style.transform = '';
+        }
+    }, { passive: true });
+
+    // Detector de scroll para efectos
+    let lastScroll = 0;
+    modal.addEventListener('scroll', () => {
+        const currentScroll = modal.scrollTop;
+        if (currentScroll > lastScroll) {
+            openBtn.style.opacity = '0';
+        } else {
+            openBtn.style.opacity = '1';
+        }
+        lastScroll = currentScroll;
+    }, { passive: true });
+});
+</script>

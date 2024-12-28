@@ -1,0 +1,193 @@
+/* Stepper Styles */
+.stepper-progress {
+    position: relative;
+    padding: 0 1rem;
+}
+
+.stepper-track {
+    position: absolute;
+    top: 24px;
+    left: 4rem;
+    right: 4rem;
+    height: 2px;
+    background: #E5E7EB;
+    z-index: 1;
+}
+
+.stepper-steps {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    z-index: 2;
+}
+
+.stepper-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.step-indicator {
+    width: 48px;
+    height: 48px;
+    background: white;
+    border: 2px solid #E5E7EB;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.stepper-step.active .step-indicator {
+    background: #10B981;
+    border-color: #10B981;
+    color: white;
+}
+
+.stepper-step.completed .step-indicator {
+    background: #10B981;
+    border-color: #10B981;
+    color: white;
+}
+
+.step-label {
+    font-size: 0.875rem;
+    color: #6B7280;
+    transition: color 0.3s ease;
+}
+
+.stepper-step.active .step-label {
+    color: #10B981;
+    font-weight: 600;
+}
+
+/* Step Content */
+.step-content {
+    display: none;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.step-content.active {
+    display: block;
+}
+
+/* Image Upload Zone */
+.image-upload-zone {
+    border: 2px dashed #E5E7EB;
+    border-radius: 0.5rem;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.image-upload-zone:hover {
+    border-color: #10B981;
+    background: #F3F4F6;
+}
+
+.upload-placeholder {
+    color: #6B7280;
+}
+
+/* Buttons */
+.btn-prev,
+.btn-next,
+.btn-submit {
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-prev {
+    background: #F3F4F6;
+    color: #374151;
+}
+
+.btn-next {
+    background: #10B981;
+    color: white;
+}
+
+.btn-submit {
+    background: #10B981;
+    color: white;
+}
+
+.btn-prev:hover { background: #E5E7EB; }
+.btn-next:hover,
+.btn-submit:hover { background: #059669; }
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile Optimizations */
+@media (max-width: 640px) {
+    .stepper-track {
+        left: 2rem;
+        right: 2rem;
+    }
+
+    .step-indicator {
+        width: 36px;
+        height: 36px;
+        font-size: 0.875rem;
+    }
+
+    .step-label {
+        font-size: 0.75rem;
+    }
+}
+
+/* Touch-friendly styles */
+@media (hover: none) {
+    .image-upload-zone {
+        padding: 3rem;
+    }
+
+    .btn-prev,
+    .btn-next,
+    .btn-submit {
+        padding: 0.75rem 1.5rem;
+        min-width: 120px;
+    }
+}
+
+/* Loading States */
+.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Card Animations */
+.card-enter {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

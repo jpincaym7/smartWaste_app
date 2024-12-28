@@ -1,0 +1,493 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<style>
+    /* Animations */
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+
+    .animate-float {
+        animation: float 3s ease-in-out infinite;
+    }
+
+    /* Parallax and scroll effects */
+    .parallax-section {
+        transform: translateZ(0);
+        transition: transform 0.3s ease-out;
+    }
+
+    .stats-card {
+        transition: all 0.3s ease;
+    }
+
+    .stats-card:active {
+        transform: scale(0.98);
+    }
+
+    /* Category cards hover effect */
+    .category-card {
+        transition: all 0.3s ease;
+    }
+
+    .category-card:hover {
+        transform: translateY(-5px);
+    }
+
+    /* Gesture animations */
+    .swipe-container {
+        touch-action: pan-y;
+        user-select: none;
+    }
+
+    /* Scroll animations */
+    .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .instruction-modal {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        border-radius: 1.5rem 1.5rem 0 0;
+        transition: transform 0.3s ease-out;
+        z-index: 40;
+        height: auto;
+        max-height: 90vh;
+        transform: translateY(100%);
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .instruction-modal.active {
+        transform: translateY(0);
+    }
+    
+    .instruction-modal.full-screen {
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+    
+    .modal-drag-handle {
+        width: 40px;
+        height: 4px;
+        background-color: #E5E7EB;
+        border-radius: 2px;
+        margin: 12px auto;
+        cursor: grab;
+        flex-shrink: 0;
+    }
+    
+    .modal-content {
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        padding: 0 1.5rem;
+    }
+    
+    .modal-header {
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 1;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #E5E7EB;
+    }
+    
+    .instruction-steps {
+        padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative overflow-hidden mb-8">
+    <div class="bg-green-600 text-white p-8 rounded-b-3xl shadow-lg transform transition-all duration-500">
+        <h1 class="text-3xl font-bold mb-3 animate-fade-in">SmartWaste</h1>
+        <p class="text-lg mb-4">Tu compañero inteligente para un mundo más limpio</p>
+        <div class="flex gap-4">
+            <a href="{% url 'waste:capture' %}" class="bg-white text-green-600 px-6 py-2 rounded-full font-semibold hover:bg-green-50 transition-colors duration-300">
+                <i class="fas fa-camera mr-2"></i>Escanear Residuo
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+{% if user.is_authenticated and user_stats %}
+<section class="py-8 px-4">
+    <h2 class="text-2xl font-bold mb-6 text-center">Tu Impacto Ambiental</h2>
+    <div class="grid grid-cols-2 gap-4">
+        <div class="stats-card bg-white p-4 rounded-xl shadow-md">
+            <div class="text-green-600 text-3xl mb-2">
+                <i class="fas fa-leaf"></i>
+            </div>
+            <p class="text-gray-600 text-sm">CO₂ Ahorrado</p>
+            <p class="text-xl font-bold">{{ user_stats.co2_saved|floatformat:1 }} kg</p>
+        </div>
+        <div class="stats-card bg-white p-4 rounded-xl shadow-md">
+            <div class="text-blue-600 text-3xl mb-2">
+                <i class="fas fa-tint"></i>
+            </div>
+            <p class="text-gray-600 text-sm">Agua Ahorrada</p>
+            <p class="text-xl font-bold">{{ user_stats.water_saved|floatformat:1 }} L</p>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Categories Section -->
+<!-- Enhanced Categories Section -->
+<section class="py-8 px-4 swipe-container">
+    <h2 class="text-2xl font-bold mb-6">Categorías de Residuos</h2>
+    <div class="flex overflow-x-auto pb-4 gap-4 snap-x snap-mandatory">
+        {% for category in categories %}
+        <div class="category-card flex-shrink-0 w-64 bg-white rounded-xl shadow-md p-4 snap-center"
+             onclick="showInstructions('{{ category.name }}', '{{ category.description }}', '{{ category.recycling_instructions|escapejs }}')">
+            {% if category.icon %}
+                <img src="{{ category.icon.url }}" alt="{{ category.name }}" class="w-16 h-16 mb-4 mx-auto">
+            {% else %}
+                <div class="w-16 h-16 mb-4 mx-auto bg-green-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-recycle text-green-600 text-2xl"></i>
+                </div>
+            {% endif %}
+            <h3 class="font-bold text-lg mb-2">{{ category.name }}</h3>
+            <p class="text-gray-600 text-sm mb-3">{{ category.description|truncatewords:20 }}</p>
+            <button class="text-green-600 text-sm font-medium flex items-center">
+                Ver instrucciones
+                <i class="fas fa-chevron-right ml-1 text-xs"></i>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+
+<div class="modal-backdrop" id="modalBackdrop"></div>
+<div class="instruction-modal" id="instructionModal">
+    <div class="modal-drag-handle"></div>
+    <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold" id="modalTitle"></h3>
+            <button onclick="hideInstructions()" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <div class="space-y-4">
+            <p class="text-gray-600" id="modalDescription"></p>
+            <div class="bg-green-50 rounded-lg p-4">
+                <h4 class="text-lg font-semibold text-green-800 mb-3">
+                    <i class="fas fa-info-circle mr-2"></i>Instrucciones de Reciclaje
+                </h4>
+                <ul class="instruction-steps text-green-800" id="modalInstructions"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Info Sections -->
+<section class="py-8 space-y-8">
+    <!-- Feature 1: Scan -->
+    <div class="fade-in bg-white rounded-xl p-6 mx-4">
+        <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                <i class="fas fa-camera text-green-600 text-xl"></i>
+            </div>
+            <h3 class="text-xl font-bold">Escaneo Inteligente</h3>
+        </div>
+        <p class="text-gray-600">Identifica y clasifica tus residuos automáticamente usando nuestra tecnología de reconocimiento.</p>
+    </div>
+
+    <!-- Feature 2: Recycling Points -->
+    <div class="fade-in bg-white rounded-xl p-6 mx-4">
+        <div class="flex items-center mb-4">
+            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                <i class="fas fa-map-marker-alt text-green-600 text-xl"></i>
+            </div>
+            <h3 class="text-xl font-bold">Puntos de Reciclaje</h3>
+        </div>
+        <p class="text-gray-600">Encuentra {{ recycling_points_count }} puntos de reciclaje cercanos y obtén direcciones para llegar a ellos.</p>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Intersection Observer for fade-in animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+
+    document.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
+
+    // Parallax effect on scroll
+    let lastScrollY = window.scrollY;
+    const parallaxSections = document.querySelectorAll('.parallax-section');
+
+    window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        const delta = (scrollY - lastScrollY) * 0.3;
+
+        parallaxSections.forEach((section) => {
+            const transform = parseFloat(section.style.transform.replace(/[^\d.-]/g, '') || 0);
+            section.style.transform = `translateY(${transform + delta}px)`;
+        });
+
+        lastScrollY = scrollY;
+    }, { passive: true });
+
+    // Swipe handling for category cards
+    const categoryContainer = document.querySelector('.swipe-container');
+    let startX;
+    let scrollLeft;
+
+    categoryContainer.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].pageX - categoryContainer.offsetLeft;
+        scrollLeft = categoryContainer.scrollLeft;
+    }, { passive: true });
+
+    categoryContainer.addEventListener('touchmove', (e) => {
+        if (!startX) return;
+        const x = e.touches[0].pageX - categoryContainer.offsetLeft;
+        const walk = (x - startX) * 2;
+        categoryContainer.scrollLeft = scrollLeft - walk;
+    }, { passive: true });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('instructionModal');
+    const modalContent = modal.querySelector('.p-6');
+    const dragHandle = modal.querySelector('.modal-drag-handle');
+    const backdrop = document.getElementById('modalBackdrop');
+    
+    let startY = 0;
+    let currentY = 0;
+    let initialModalHeight = 0;
+    let isDragging = false;
+    let lastTapTime = 0;
+    const DOUBLE_TAP_DELAY = 300;
+    const VELOCITY_THRESHOLD = 0.5;
+    const MIN_DRAG_THRESHOLD = 10;
+
+    // Modal states
+    const MODAL_STATES = {
+        FULL: 'full',
+        PARTIAL: 'partial',
+        CLOSED: 'closed'
+    };
+    let currentState = MODAL_STATES.PARTIAL;
+
+    // Touch handling utilities
+    let velocityTracking = {
+        positions: [],
+        timestamps: [],
+        maxTrackingPoints: 5
+    };
+
+    function calculateVelocity() {
+        if (velocityTracking.positions.length < 2) return 0;
+        
+        const positions = velocityTracking.positions;
+        const timestamps = velocityTracking.timestamps;
+        const lastIndex = positions.length - 1;
+        
+        const deltaY = positions[lastIndex] - positions[0];
+        const deltaTime = (timestamps[lastIndex] - timestamps[0]) / 1000;
+        
+        return deltaY / deltaTime;
+    }
+
+    function trackVelocity(y, timestamp) {
+        velocityTracking.positions.push(y);
+        velocityTracking.timestamps.push(timestamp);
+
+        if (velocityTracking.positions.length > velocityTracking.maxTrackingPoints) {
+            velocityTracking.positions.shift();
+            velocityTracking.timestamps.shift();
+        }
+    }
+
+    function resetVelocityTracking() {
+        velocityTracking.positions = [];
+        velocityTracking.timestamps = [];
+    }
+
+    // Modal positioning functions
+    function setModalPosition(position) {
+        // Solo aplicamos límites cuando el modal no se está cerrando
+        if (currentState !== MODAL_STATES.CLOSED) {
+            const maxPosition = window.innerHeight - initialModalHeight;
+            const minPosition = 0;
+            position = Math.max(minPosition, Math.min(maxPosition, position));
+        }
+        modal.style.transform = `translateY(${position}px)`;
+    }
+
+    function animateModal(targetPosition, duration = 300) {
+        modal.style.transition = `transform ${duration}ms ease-out`;
+        setModalPosition(targetPosition);
+        
+        setTimeout(() => {
+            modal.style.transition = '';
+        }, duration);
+    }
+
+    function updateModalState(newState) {
+        currentState = newState;
+        
+        switch (newState) {
+            case MODAL_STATES.FULL:
+                animateModal(0);
+                modal.classList.add('full-screen');
+                break;
+            case MODAL_STATES.PARTIAL:
+                const partialHeight = window.innerHeight * 0.6;
+                animateModal(window.innerHeight - partialHeight);
+                modal.classList.remove('full-screen');
+                break;
+            case MODAL_STATES.CLOSED:
+                hideInstructions();
+                break;
+        }
+    }
+
+    function handleTouchStart(e) {
+        const touch = e.touches[0];
+        startY = touch.pageY;
+        currentY = startY;
+        initialModalHeight = modal.getBoundingClientRect().height;
+        isDragging = true;
+
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTapTime;
+        if (tapLength < DOUBLE_TAP_DELAY && tapLength > 0) {
+            updateModalState(currentState === MODAL_STATES.FULL ? 
+                           MODAL_STATES.PARTIAL : 
+                           MODAL_STATES.FULL);
+        }
+        lastTapTime = currentTime;
+
+        resetVelocityTracking();
+        trackVelocity(touch.pageY, e.timeStamp);
+    }
+
+    function handleTouchMove(e) {
+        if (!isDragging) return;
+        
+        const touch = e.touches[0];
+        const deltaY = touch.pageY - startY;
+        currentY = touch.pageY;
+
+        trackVelocity(touch.pageY, e.timeStamp);
+
+        const isAtTop = modalContent.scrollTop <= 0;
+        const isAtBottom = modalContent.scrollTop + modalContent.clientHeight >= modalContent.scrollHeight;
+        
+        // Permitir el cierre deslizando hacia arriba
+        if (deltaY > 0 && isAtTop) {
+            e.preventDefault();
+            setModalPosition(deltaY);
+        } 
+        // Prevenir movimiento hacia arriba solo cuando está en pantalla completa
+        else if (currentState === MODAL_STATES.FULL && deltaY < 0) {
+            return;
+        }
+        // Permitir movimiento normal en otros casos
+        else if (isAtTop && deltaY > 0 || isAtBottom && deltaY < 0) {
+            e.preventDefault();
+            setModalPosition(deltaY);
+        }
+    }
+
+    function handleTouchEnd(e) {
+        if (!isDragging) return;
+        isDragging = false;
+
+        const velocity = calculateVelocity();
+        const deltaY = currentY - startY;
+
+        if (Math.abs(velocity) > VELOCITY_THRESHOLD) {
+            if (velocity > 0) {
+                updateModalState(MODAL_STATES.CLOSED);
+            } else {
+                updateModalState(MODAL_STATES.FULL);
+            }
+        } else if (Math.abs(deltaY) > MIN_DRAG_THRESHOLD) {
+            if (deltaY > initialModalHeight * 0.3) {
+                updateModalState(MODAL_STATES.CLOSED);
+            } else if (deltaY < -initialModalHeight * 0.3) {
+                updateModalState(MODAL_STATES.FULL);
+            } else {
+                updateModalState(MODAL_STATES.PARTIAL);
+            }
+        } else {
+            updateModalState(currentState);
+        }
+    }
+
+    window.showInstructions = function(title, description, instructions) {
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalDescription').textContent = description;
+        
+        const instructionsList = document.getElementById('modalInstructions');
+        instructionsList.innerHTML = instructions.split('\n')
+            .filter(step => step.trim())
+            .map(step => `<li class="instruction-step">${step}</li>`)
+            .join('');
+        
+        modal.classList.add('active');
+        backdrop.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        
+        updateModalState(MODAL_STATES.PARTIAL);
+    };
+
+    window.hideInstructions = function() {
+        modal.classList.remove('active', 'full-screen');
+        backdrop.classList.remove('active');
+        document.body.style.overflow = '';
+        setModalPosition(window.innerHeight);
+        currentState = MODAL_STATES.CLOSED;
+    };
+
+    dragHandle.addEventListener('touchstart', handleTouchStart, { passive: false });
+    dragHandle.addEventListener('touchmove', handleTouchMove, { passive: false });
+    dragHandle.addEventListener('touchend', handleTouchEnd);
+    
+    modalContent.addEventListener('touchstart', handleTouchStart, { passive: true });
+    modalContent.addEventListener('touchmove', handleTouchMove, { passive: false });
+    modalContent.addEventListener('touchend', handleTouchEnd);
+    
+    backdrop.addEventListener('click', hideInstructions);
+
+    window.addEventListener('resize', () => {
+        if (currentState !== MODAL_STATES.CLOSED) {
+            updateModalState(currentState);
+        }
+    });
+});
+</script>
+{% endblock %}

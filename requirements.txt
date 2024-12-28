@@ -1,0 +1,50 @@
+# Django y extensiones principales
+Django==5.0
+djangorestframework==3.14.0
+django-cors-headers==4.3.1
+django-filter==23.5
+djangorestframework-gis==1.0
+djangorestframework-simplejwt==5.3.1
+drf-yasg==1.21.7
+
+# Procesamiento de imágenes y ML
+torch==2.1.2
+torchvision==0.16.2
+ultralytics==8.0.227  # Para YOLOv8
+Pillow==10.1.0
+opencv-python==4.9.0.80
+numpy==1.26.2
+
+# Geolocalización y mapas
+geopy==2.4.1
+folium==0.15.1
+
+# Base de datos y cache
+psycopg2-binary==2.9.9
+redis==5.0.1
+hiredis==2.3.2
+
+# Almacenamiento en la nube
+django-storages==1.14.2
+boto3==1.34.7
+
+# Utilidades
+python-dotenv==1.0.0
+requests==2.31.0
+pandas==2.1.4
+python-magic==0.4.27
+gunicorn==21.2.0
+
+# Testing
+pytest==7.4.3
+pytest-django==4.7.0
+coverage==7.3.3
+
+# Desarrollo
+black==23.12.1
+flake8==6.1.0
+isort==5.13.2
+pre-commit==3.6.0
+
+# Monitoreo y logging
+sentry-sdk==1.39.1

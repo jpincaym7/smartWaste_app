@@ -1,0 +1,9 @@
+venv
+.venv
+env
+
+waste_detection_db.sqlite3
+wast_detection.pt
+media
+
+migrations
