@@ -243,5 +243,5 @@ class EducationView(TemplateView):
                 'duration': '4:22'
             },
         ]
-        print(context)
+        print(f"{context}")
         return context
