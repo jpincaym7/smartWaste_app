@@ -227,19 +227,19 @@ class EducationView(TemplateView):
             {
                 'title': '¿Que es el reciclaje?',
                 'thumbnail_url': '/static/img/reciclaje_1.png',
-                'video_url': settings.STATIC_VIDEO_URL + 'reciclaje_1.mp4',
+                'video_url': 'https://s3-srd-project.s3.us-east-2.amazonaws.com/videos/reciclaje_1.mp4',
                 'duration': '2:30'
             },
             {
                 'title': '¿Cómo reciclar?',
                 'thumbnail_url': '/static/img/reciclaje_2.png',
-                'video_url': settings.STATIC_VIDEO_URL + 'como_reciclar_2.mp4',
+                'video_url': 'https://s3-srd-project.s3.us-east-2.amazonaws.com/videos/como_reciclar_2.mp4',
                 'duration': '4:22'
             },
             {
                 'title': 'IMPORTANCIA DEL RECICLAJE',
                 'thumbnail_url': '/static/img/importancia_1.png',
-                'video_url': settings.STATIC_VIDEO_URL + 'importancia_1.mp4',
+                'video_url': 'https://s3-srd-project.s3.us-east-2.amazonaws.com/videos/importancia_1.mp4',
                 'duration': '4:22'
             },
         ]
