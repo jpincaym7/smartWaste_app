@@ -222,26 +222,29 @@ class EducationView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        # Datos de videos educativos
+        # URL base de S3 donde están almacenados los archivos
+        S3_BASE_URL = 'https://s3-srd-project.s3.us-east-2.amazonaws.com'
+        
+        # Datos de videos educativos con URLs completas de S3
         context['education_videos'] = [
             {
                 'title': '¿Que es el reciclaje?',
-                'thumbnail_url': '/static/img/reciclaje_1.png',
-                'video_url': 'https://s3-srd-project.s3.us-east-2.amazonaws.com/videos/reciclaje_1.mp4',
+                'thumbnail_url': f'{S3_BASE_URL}/static/img/reciclaje_1.png',
+                'video_url': f'{S3_BASE_URL}/videos/reciclaje_1.mp4',
                 'duration': '2:30'
             },
             {
                 'title': '¿Cómo reciclar?',
-                'thumbnail_url': '/static/img/reciclaje_2.png',
-                'video_url': 'https://s3-srd-project.s3.us-east-2.amazonaws.com/videos/como_reciclar_2.mp4',
+                'thumbnail_url': f'{S3_BASE_URL}/static/img/reciclaje_2.png',
+                'video_url': f'{S3_BASE_URL}/videos/como_reciclar_2.mp4',
                 'duration': '4:22'
             },
             {
                 'title': 'IMPORTANCIA DEL RECICLAJE',
-                'thumbnail_url': '/static/img/importancia_1.png',
-                'video_url': 'https://s3-srd-project.s3.us-east-2.amazonaws.com/videos/importancia_1.mp4',
+                'thumbnail_url': f'{S3_BASE_URL}/static/img/importancia_1.png',
+                'video_url': f'{S3_BASE_URL}/videos/importancia_1.mp4',
                 'duration': '4:22'
             },
         ]
-        print(f"{context}")
+        
         return context
