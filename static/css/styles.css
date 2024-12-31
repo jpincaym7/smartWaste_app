@@ -1,0 +1,210 @@
+/* Enhanced Loader with Emerald Theme */
+#loader-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: linear-gradient(135deg, #059669, #047857);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: all 0.5s ease-out;
+}
+
+.loader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.smartwaste-loader {
+    width: 120px;
+    height: 120px;
+    background: rgba(167, 243, 208, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.smartwaste-loader::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 4px solid rgba(167, 243, 208, 0.2);
+    animation: spin 2s linear infinite;
+}
+
+.smartwaste-loader i {
+    font-size: 3rem;
+    color: #A7F3D0;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+.loader-title {
+    color: #ECFDF5;
+    font-size: 2rem;
+    font-weight: bold;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.loader-subtitle {
+    color: #D1FAE5;
+    font-size: 1rem;
+}
+
+/* Navigation Items with Emerald Theme */
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    color: #065F46;
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+    width: 160px;
+    border: 1px solid transparent;
+}
+
+.nav-item:hover {
+    background-color: #ECFDF5;
+    color: #059669;
+    border-color: #A7F3D0;
+}
+
+.nav-item i {
+    width: 24px;
+    margin-right: 12px;
+    color: #059669;
+}
+
+.nav-item span {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Bottom Navigation States */
+#bottomNav.active {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+    box-shadow: 0 4px 20px rgba(6, 95, 70, 0.1);
+}
+
+/* Enhanced Animations */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+@keyframes pulse {
+    0%, 100% { 
+        box-shadow: 0 0 0 0 rgba(167, 243, 208, 0.4);
+    }
+    50% { 
+        box-shadow: 0 0 0 20px rgba(167, 243, 208, 0);
+    }
+}
+
+/* Toast Notifications with Emerald Theme */
+.toast-message {
+    backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.98);
+    transform-origin: top right;
+    border-left: 4px solid #059669;
+}
+
+.progress-bar {
+    animation: progress 5s linear forwards;
+    height: 2px;
+}
+
+@keyframes progress {
+    from { width: 100%; }
+    to { width: 0%; }
+}
+
+.animate-toast-in {
+    animation: slideIn 0.3s ease-out forwards;
+}
+
+.animate-toast-out {
+    animation: slideOut 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%) scale(0.5);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%) scale(0.5);
+        opacity: 0;
+    }
+}
+
+/* Toast types with emerald colors */
+.toast-success .progress-bar { background-color: #059669; }
+.toast-error .progress-bar { background-color: #DC2626; }
+.toast-warning .progress-bar { background-color: #D97706; }
+.toast-info .progress-bar { background-color: #2563EB; }
+
+/* Enhanced Drop Shadow Utilities */
+.shadow-hover {
+    transition: all 0.3s ease;
+}
+
+.shadow-hover:hover {
+    box-shadow: 0 4px 12px rgba(6, 95, 70, 0.1);
+    transform: translateY(-1px);
+}
+
+/* Responsive Design Improvements */
+@media (max-width: 640px) {
+    .loader-title {
+        font-size: 1.5rem;
+    }
+    
+    .smartwaste-loader {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .nav-item {
+        width: 140px;
+        padding: 0.5rem 1rem;
+    }
+    
+    .nav-item i {
+        font-size: 1.1rem;
+    }
+    
+    .nav-item span {
+        font-size: 0.8rem;
+    }
+}

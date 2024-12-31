@@ -13,7 +13,6 @@
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     
     <!-- PWA META TAGS -->
@@ -21,195 +20,78 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="SmartWaste">
     <meta name="apple-mobile-web-app-title" content="SmartWaste">
-    <meta name="theme-color" content="#4CAF50">
-    <meta name="msapplication-navbutton-color" content="#4CAF50">
+    <meta name="theme-color" content="#059669">
+    <meta name="msapplication-navbutton-color" content="#059669">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <style>
-        #loader-wrapper {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 9999;
-            background: linear-gradient(135deg, #4CAF50, #2E7D32);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 1;
-            transition: opacity 0.5s ease-out;
-        }
-
-        #loader-wrapper.fade-out {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .earth-loader {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: #fff;
-            position: relative;
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        .earth-loader::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: linear-gradient(45deg, 
-                transparent 40%, 
-                rgba(76, 175, 80, 0.8) 40%, 
-                rgba(76, 175, 80, 0.8) 60%, 
-                transparent 60%
-            );
-            animation: rotate 2s linear infinite;
-        }
-
-        .earth-loader::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: linear-gradient(135deg, 
-                transparent 40%, 
-                rgba(76, 175, 80, 0.8) 40%, 
-                rgba(76, 175, 80, 0.8) 60%, 
-                transparent 60%
-            );
-            animation: rotate 2s linear infinite reverse;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .content {
-            opacity: 0;
-            transition: opacity 0.5s ease-in;
-        }
-
-        .content.visible {
-            opacity: 1;
-        }
-    </style>
-    <style>
-        /* Animaciones para los toasts */
-        @keyframes slideIn {
-            from {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideOut {
-            from {
-                transform: translateY(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
-        }
-
-        @keyframes progress {
-            from { width: 100%; }
-            to { width: 0%; }
-        }
-
-        .animate-toast-in {
-            animation: slideIn 0.3s ease-out forwards;
-        }
-
-        .animate-toast-out {
-            animation: slideOut 0.3s ease-out forwards;
-        }
-
-        .progress-bar {
-            animation: progress 5s linear forwards;
-        }
-
-        .toast-message {
-            backdrop-filter: blur(8px);
-            background: rgba(255, 255, 255, 0.95);
-        }
-
-        /* Estilos para diferentes tipos de mensajes */
-        .toast-success .progress-bar { background-color: #10B981; }
-        .toast-error .progress-bar { background-color: #EF4444; }
-        .toast-warning .progress-bar { background-color: #F59E0B; }
-        .toast-info .progress-bar { background-color: #3B82F6; }
-    </style>
-    
     {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-gray-100">
-    <!-- Loader Wrapper -->
+<body class="bg-gradient-to-br from-green-50 via-emerald-50 to-emerald-100">
+    <!-- Improved Loader -->
     <div id="loader-wrapper">
-        <div class="earth-loader"></div>
+        <div class="loader-content">
+            <div class="smartwaste-loader">
+                <i class="fas fa-recycle"></i>
+            </div>
+            <h1 class="loader-title">SmartWaste</h1>
+            <p class="loader-subtitle">Por un mundo más limpio</p>
+        </div>
     </div>
-    <!-- Navegación -->
-    <nav class="fixed top-0 w-full bg-green-600 text-white z-50 shadow-md">
+
+    <!-- Improved Navigation -->
+    <nav class="fixed top-0 w-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white z-50 shadow-md">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center h-16">
-                <div class="flex items-center">
-                    <a href="{% url 'home' %}" class="text-xl font-bold">SmartWaste</a>
+                <div class="flex items-center space-x-4">
+                    <a href="{% url 'home' %}" class="flex items-center space-x-2">
+                        <i class="fas fa-recycle  text-2xl text-green-300"></i>
+                        <span class="text-xl font-bold bg-gradient-to-r from-emerald-500 to-green-600 bg-clip-text text-green-300">
+                            SmartWaste
+                        </span>
+                    </a>
                 </div>
+
                 <div class="flex items-center">
                     {% if user.is_authenticated %}
                     <div id="authUserMenu" class="relative">
-                        <button class="flex items-center space-x-2 p-2 rounded-lg hover:bg-green-700 transition-colors duration-200">
+                        <button class="flex items-center space-x-3 px-4 py-2 rounded-full bg-emerald-50 hover:bg-emerald-100 transition-all duration-300">
                             {% if user.avatar %}
-                                <img src="{{ user.avatar.url }}" alt="Profile Picture" class="w-8 h-8 rounded-full object-cover">
+                                <img src="{{ user.avatar.url }}" alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-emerald-500">
                             {% else %}
-                                <i class="fas fa-user-circle text-xl"></i>
+                                <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center">
+                                    <i class="fas fa-user text-white"></i>
+                                </div>
                             {% endif %}
-                            <span class="text-sm">{{ user.email }}</span>
-                            <i class="fas fa-chevron-down text-xs"></i>
+                            <i class="fas fa-chevron-down text-xs text-gray-400"></i>
                         </button>
                         
-                        <!-- Menú desplegable -->
-                        <div id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden">
-                            <div class="px-4 py-2 border-b border-gray-100">
-                                <p class="text-sm font-medium text-gray-900">{{ user.get_full_name|default:user.email }}</p>
+                        <!-- Enhanced Dropdown Menu -->
+                        <div id="dropdownMenu" class="absolute right-0 mt-3 w-64 bg-white rounded-xl shadow-lg py-2 hidden transform transition-all duration-300 ease-out">
+                            <div class="px-4 py-3 border-b border-gray-100">
+                                <p class="text-sm font-semibold text-gray-900">{{ user.get_full_name|default:user.email }}</p>
                                 <p class="text-xs text-gray-500">{{ user.email }}</p>
                             </div>
                             
-                            <a href="{% url 'security:profile' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">
-                                <i class="fas fa-user-cog mr-2"></i> Perfil
+                            <a href="{% url 'security:profile' %}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                                <i class="fas fa-user-cog text-emerald-500 mr-3"></i>
+                                <span>Perfil</span>
                             </a>
                             
-                            <div class="border-t border-gray-100 mt-2"></div>
+                            <div class="border-t border-gray-100 my-1"></div>
                             
-                            <form action="{% url 'security:logout' %}" method="post" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200">
+                            <form action="{% url 'security:logout' %}" method="post" class="block">
                                 {% csrf_token %}
-                                <button type="submit" class="flex items-center space-x-2">
-                                    <i class="fas fa-sign-out-alt mr-2"></i> Cerrar Sesión
+                                <button type="submit" class="flex items-center w-full px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200">
+                                    <i class="fas fa-sign-out-alt mr-3"></i>
+                                    <span>Cerrar Sesión</span>
                                 </button>
                             </form>
                         </div>
                     </div>
                     {% else %}
-                    <div id="guestMenu" class="flex items-center">
-                        <a href="{% url 'security:login' %}" class="p-2 hover:bg-green-700 rounded-lg transition-colors duration-200">
+                    <div id="guestMenu">
+                        <a href="{% url 'security:login' %}" class="inline-flex items-center px-4 py-2 rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors duration-300">
                             <i class="fas fa-sign-in-alt mr-2"></i>
-                            Iniciar Sesión
+                            <span>Iniciar Sesión</span>
                         </a>
                     </div>
                     {% endif %}
@@ -218,51 +100,39 @@
         </div>
     </nav>
 
-    <!-- Sistema de Notificaciones Toast -->
+    <!-- Toast Container -->
     {% if messages %}
-    <div id="toast-container" class="fixed top-20 left-0 right-0 z-50 pointer-events-none p-4 flex flex-col items-center space-y-2">
+    <div id="toast-container" class="fixed top-20 right-4 z-50 pointer-events-none p-4 flex flex-col items-end space-y-2">
         {% for message in messages %}
-        <div class="toast-message animate-toast-in pointer-events-auto max-w-sm w-full bg-white rounded-lg shadow-lg overflow-hidden">
+        <div class="toast-message animate-toast-in pointer-events-auto max-w-sm w-full bg-white rounded-xl shadow-lg overflow-hidden">
             <div class="relative">
-                <!-- Barra de progreso -->
                 <div class="progress-bar absolute bottom-0 left-0 h-1 bg-{{ message.tags }}-500 w-full"></div>
-                
-                <!-- Contenido del mensaje -->
                 <div class="flex items-start p-4">
-                    <!-- Icono según el tipo de mensaje -->
                     <div class="flex-shrink-0">
                         {% if message.tags == 'success' %}
-                            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                                <i class="fas fa-check text-green-500"></i>
+                            <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                                <i class="fas fa-check text-emerald-500"></i>
                             </div>
                         {% elif message.tags == 'error' %}
-                            <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                            <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
                                 <i class="fas fa-times text-red-500"></i>
                             </div>
                         {% elif message.tags == 'warning' %}
-                            <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center">
-                                <i class="fas fa-exclamation text-yellow-500"></i>
+                            <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                                <i class="fas fa-exclamation text-amber-500"></i>
                             </div>
                         {% else %}
-                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
                                 <i class="fas fa-info text-blue-500"></i>
                             </div>
                         {% endif %}
                     </div>
-                    
-                    <!-- Texto del mensaje -->
-                    <div class="ml-3 w-0 flex-1">
-                        <p class="text-sm font-medium text-gray-900">
-                            {{ message }}
-                        </p>
+                    <div class="ml-4 w-0 flex-1">
+                        <p class="text-sm font-medium text-gray-900">{{ message }}</p>
                     </div>
-                    
-                    <!-- Botón cerrar -->
-                    <div class="ml-4 flex-shrink-0 flex">
-                        <button type="button" class="close-toast inline-flex text-gray-400 hover:text-gray-500">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
+                    <button type="button" class="close-toast ml-4 text-gray-400 hover:text-gray-600 transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -276,135 +146,40 @@
         {% endblock %}
     </main>
 
-    <!-- Bottom Navigation -->
-    <nav class="fixed bottom-0 w-full bg-white border-t border-gray-200 z-50">
-        <div class="flex justify-around items-center h-16">
-            <a href="{% url 'home' %}" class="flex flex-col items-center text-gray-600">
-                <i class="fas fa-home text-xl"></i>
-                <span class="text-xs mt-1">Inicio</span>
+    <!-- Bottom Navigation Trigger -->
+    <button id="bottomNavTrigger" class="fixed bottom-6 left-6 z-50 w-12 h-12 rounded-full bg-green-300 shadow-lg flex items-center justify-center text-white hover:bg-emerald-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Improved Bottom Navigation -->
+    <nav id="bottomNav" class="fixed bottom-24 left-6 z-40 bg-white rounded-2xl shadow-xl transform translate-y-full opacity-0 transition-all duration-300 invisible">
+        <div class="flex flex-col p-2 space-y-1">
+            <a href="{% url 'home' %}" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
             </a>
-            <a href="{% url 'waste:capture' %}" class="flex flex-col items-center text-gray-600">
-                <i class="fas fa-camera text-xl"></i>
-                <span class="text-xs mt-1">Escanear</span>
+            <a href="{% url 'waste:capture' %}" class="nav-item">
+                <i class="fas fa-camera"></i>
+                <span>Escanear</span>
             </a>
-            <a href="{% url 'recycling_points:points' %}" class="flex flex-col items-center text-gray-600">
-                <i class="fas fa-map-marker-alt text-xl"></i>
-                <span class="text-xs mt-1">Puntos</span>
+            <a href="{% url 'recycling_points:points' %}" class="nav-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Puntos</span>
             </a>
-            <a href="{% url 'gamification:reports-view' %}" class="flex flex-col items-center text-gray-600">
-                <i class="fas fa-clipboard-list text-xl"></i>
-                <span class="text-xs mt-1">Reportes</span>
+            <a href="{% url 'gamification:reports-view' %}" class="nav-item">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Reportes</span>
             </a>
-            <a href="{% url 'gamification:education' %}" class="flex flex-col items-center text-gray-600">
-                <i class="fas fa-book text-xl"></i>
-                <span class="text-xs mt-1">Aprende</span>
+            <a href="{% url 'gamification:education' %}" class="nav-item">
+                <i class="fas fa-book"></i>
+                <span>Aprende</span>
             </a>
         </div>
     </nav>
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    
-    <script>
-        // Manejo del menú desplegable
-        const button = document.querySelector('#authUserMenu button');
-        const dropdownMenu = document.querySelector('#dropdownMenu');
-    
-        button?.addEventListener('click', function() {
-            dropdownMenu.classList.toggle('hidden');
-        });
-
-        // Sistema de notificaciones
-        document.addEventListener('DOMContentLoaded', function() {
-            // Función para remover un toast
-            function removeToast(toast) {
-                toast.classList.add('animate-toast-out');
-                setTimeout(() => {
-                    toast.remove();
-                }, 300);
-            }
-
-            // Manejar clicks en botones de cerrar
-            const closeButtons = document.querySelectorAll('.close-toast');
-            closeButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const toast = button.closest('.toast-message');
-                    removeToast(toast);
-                });
-            });
-
-            // Auto-remover toasts después de 5 segundos
-            const toasts = document.querySelectorAll('.toast-message');
-            toasts.forEach(toast => {
-                // Permitir mantener el toast al pasar el mouse
-                let timeoutId;
-
-                const startTimer = () => {
-                    timeoutId = setTimeout(() => {
-                        removeToast(toast);
-                    }, 5000);
-                };
-
-                toast.addEventListener('mouseenter', () => {
-                    clearTimeout(timeoutId);
-                    const progressBar = toast.querySelector('.progress-bar');
-                    if (progressBar) {
-                        progressBar.style.animationPlayState = 'paused';
-                    }
-                });
-
-                toast.addEventListener('mouseleave', () => {
-                    const progressBar = toast.querySelector('.progress-bar');
-                    if (progressBar) {
-                        progressBar.style.animationPlayState = 'running';
-                    }
-                    startTimer();
-                });
-
-                // Soporte para gestos táctiles (swipe para descartar)
-                let touchStartX = 0;
-                let touchEndX = 0;
-
-                toast.addEventListener('touchstart', e => {
-                    touchStartX = e.changedTouches[0].screenX;
-                }, false);
-
-                toast.addEventListener('touchend', e => {
-                    touchEndX = e.changedTouches[0].screenX;
-                    handleSwipe();
-                }, false);
-
-                function handleSwipe() {
-                    const swipeDistance = Math.abs(touchEndX - touchStartX);
-                    if (swipeDistance > 100) { // Umbral de 100px para el swipe
-                        toast.style.transition = 'transform 0.3s ease-out';
-                        toast.style.transform = `translateX(${touchEndX - touchStartX > 0 ? '100%' : '-100%'})`;
-                        setTimeout(() => removeToast(toast), 300);
-                    }
-                }
-
-                // Iniciar el timer
-                startTimer();
-            });
-        });
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const loaderWrapper = document.getElementById('loader-wrapper');
-            const content = document.querySelector('.content');
-            
-            // Simular tiempo de carga mínimo de 2 segundos
-            setTimeout(() => {
-                loaderWrapper.classList.add('fade-out');
-                content.classList.add('visible');
-                
-                // Remover el loader después de la animación
-                setTimeout(() => {
-                    loaderWrapper?.remove();
-                }, 500);
-            }, 1000);
-        });
-    </script>
+    <script src="{% static 'js/main.js' %}"></script>
     {% block extra_scripts %}{% endblock %}
 </body>
 </html>

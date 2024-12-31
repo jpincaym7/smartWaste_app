@@ -11,20 +11,36 @@
     height: 100%;
 }
 
+.directions-button {
+    width: 100%;
+    background: #4CAF50;
+    color: white;
+    padding: 1rem;
+    border: none;
+    border-radius: 12px;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+
 /* Point Details Panel */
 .point-details {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
     background: white;
-    border-radius: 1.5rem 1.5rem 0 0;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    border-radius: 20px 20px 0 0;
+    padding: 1rem;
     transform: translateY(100%);
-    transition: transform 0.3s ease-out;
+    transition: transform 0.3s ease;
+    z-index: 1001;
     max-height: 80vh;
     overflow-y: auto;
-    z-index: 20;
 }
 
 .point-details.visible {
@@ -37,8 +53,8 @@
     right: 1rem;
     background: none;
     border: none;
+    font-size: 1.5rem;
     color: #666;
-    padding: 0.5rem;
 }
 
 .point-details-content {
@@ -95,32 +111,92 @@
     margin-top: 1rem;
 }
 
+/* Loading indicator */
 .loading-indicator {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(255, 255, 255, 0.9);
-    padding: 1rem 2rem;
-    border-radius: 2rem;
+    background: rgba(255,255,255,0.9);
+    padding: 1rem;
+    border-radius: 12px;
     display: flex;
     align-items: center;
-    gap: 1rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    gap: 8px;
+}
+
+.points-list-container {
+    flex: 1;
+    overflow-y: auto;
+    background: #fff;
+    border-top: 3px solid #4CAF50;
+    position: relative;
+}
+
+
+.recycling-point-card {
+    padding: 1rem;
+    margin: 0.5rem 1rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.recycling-point-card:active {
+    transform: scale(0.98);
+}
+
+
+.point-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.point-card-name {
+    font-weight: 600;
+    color: #1a1a1a;
+    font-size: 1rem;
+}
+
+.point-card-distance {
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.point-card-address {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.type-tag {
+    display: inline-block;
+    background: #f5f5f5;
+    color: #4a4a4a;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    margin: 2px;
 }
 
 .spinner {
-    width: 1.5rem;
-    height: 1.5rem;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid #4CAF50;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #4CAF50;
+    border-top-color: transparent;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    to { transform: rotate(360deg); }
 }
 
 .hidden {
@@ -243,4 +319,39 @@
 
 .location-control.tracking i {
     color: white;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.map-container {
+    position: relative;
+    width: 100%;
+    height: 45vh;
+    transition: height 0.3s ease;
+}
+
+.map-container.expanded {
+    height: 85vh;
+}
+
+
+.toggle-view-btn {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }

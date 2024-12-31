@@ -1,0 +1,89 @@
+/* Contenedor principal adaptativo */
+.education-container {
+    min-height: calc(100vh - 144px); /* Ajuste para nav superior (64px) e inferior (80px) */
+    padding-bottom: 80px; /* Espacio para bottom nav */
+}
+
+/* Navegación de secciones */
+.section-nav {
+    position: sticky;
+    top: 64px; /* Altura del nav superior */
+    background: white;
+    z-index: 30;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.section-nav-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.section-nav-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.section-tab {
+    position: relative;
+    padding: 1rem;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.section-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #10B981;
+}
+
+/* Contenido de secciones */
+.section-content {
+    display: none;
+    padding: 1rem;
+}
+
+.section-content.active {
+    display: block;
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Cards y elementos */
+.info-card {
+    height: 100%;
+    transition: transform 0.3s ease;
+    background: white;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+@media (min-width: 768px) {
+    .info-card:hover {
+        transform: translateY(-5px);
+    }
+}
+
+/* Animaciones */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0px); }
+}
+
+.float-icon {
+    animation: float 3s ease-in-out infinite;
+}

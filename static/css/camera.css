@@ -1,0 +1,116 @@
+.waste-type {
+    transition: all 0.3s ease;
+}
+
+
+.camera-container {
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+.camera-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.detection-box {
+    position: absolute;
+    border: 2px solid #fff;
+    border-radius: 4px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.3);
+}
+
+.upload-area {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+    border-color: #2196F3;
+    background-color: rgba(33, 150, 243, 0.05);
+}
+
+.capture-tips {
+    background-color: #f8f9fa;
+    border-left: 4px solid #2196F3;
+}
+
+.tips-icon {
+    color: #2196F3;
+}
+
+.waste-result-card {
+    border-radius: 1rem;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.waste-result-card:hover {
+    transform: translateY(-2px);
+}
+
+.waste-header {
+    padding: 1.5rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.waste-icon-container {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+}
+
+.waste-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.waste-info {
+    background: white;
+    padding: 1.5rem;
+}
+
+.waste-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    background: #f8f9fa;
+}
+
+.waste-stat i {
+    font-size: 1.25rem;
+}
+
+/* Color themes for different waste types */
+.waste-type-metal { background: linear-gradient(135deg, #FFC107, #FFA000); }
+.waste-type-latas { background: linear-gradient(135deg, #FFC107, #FFA000); }
+.waste-type-papel { background: linear-gradient(135deg, #2196F3, #1976D2); }
+.waste-type-plastico { background: linear-gradient(135deg, #2196F3, #1976D2); }
+.waste-type-botella { background: linear-gradient(135deg, #2196F3, #1976D2); }
+.waste-type-vidrio { background: linear-gradient(135deg, #4CAF50, #388E3C); }
+.waste-type-carton {background: linear-gradient(135deg, #9E9E9E, #757575);}

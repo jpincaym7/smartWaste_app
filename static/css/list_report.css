@@ -1,0 +1,209 @@
+/* Core Layout & Transitions */
+:root {
+    --header-height: 4rem;
+    --bottom-nav-height: 4rem;
+    --main-spacing: 1rem;
+    --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.app-container {
+    height: 100vh;
+    height: calc(100vh - var(--safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    padding-bottom: calc(var(--bottom-nav-height) + var(--main-spacing));
+}
+
+/* Custom Scrollbar */
+.main-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.main-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.main-content::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+/* View Toggle System */
+.view-toggle {
+    position: fixed;
+    right: 1rem;
+    bottom: calc(var(--bottom-nav-height) + 1rem);
+    z-index: 40;
+    transition: transform 0.3s ease;
+}
+
+.view-toggle.map-active {
+    transform: translateY(-50vh);
+}
+
+/* Modern Header */
+.floating-header {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.85);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Card Designs */
+.report-card {
+    background: white;
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.report-card:active {
+    transform: scale(0.98);
+}
+
+/* Status Badges with Gradients */
+.severity-badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+.severity-badge-1 { background: linear-gradient(135deg, #FEF9C3, #FDE68A); color: #854D0E; }
+.severity-badge-2 { background: linear-gradient(135deg, #FFEDD5, #FED7AA); color: #9A3412; }
+.severity-badge-3 { background: linear-gradient(135deg, #FEE2E2, #FCA5A5); color: #991B1B; }
+.severity-badge-4 { background: linear-gradient(135deg, #F3E8FF, #E9D5FF); color: #6B21A8; }
+
+/* Loading Skeletons */
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.06) 25%,
+        rgba(0, 0, 0, 0.12) 37%,
+        rgba(0, 0, 0, 0.06) 63%
+    );
+    background-size: 400% 100%;
+    animation: skeleton-loading 1.4s ease infinite;
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: 100% 50%; }
+    100% { background-position: 0 50%; }
+}
+
+/* Lazy Loading Images */
+.lazy-image {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.lazy-image.loaded {
+    opacity: 1;
+}
+
+/* View Transitions */
+.view-container {
+    position: relative;
+    height: calc(100vh - var(--header-height) - var(--bottom-nav-height));
+}
+
+.list-view, .map-view {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease-out;
+}
+
+.list-view {
+    transform: translateX(0);
+}
+
+.list-view.hidden {
+    transform: translateX(-100%);
+}
+
+.map-view {
+    transform: translateX(100%);
+}
+
+.map-view.visible {
+    transform: translateX(0);
+}
+
+/* Pull to Refresh */
+.ptr-element {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    color: #666;
+    z-index: 10;
+    text-align: center;
+    height: 50px;
+}
+
+/* Touch Feedback */
+.touch-feedback {
+    position: relative;
+    overflow: hidden;
+}
+
+.touch-feedback::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1);
+    transition: 0.5s all ease;
+}
+
+.touch-feedback:active::after {
+    transform: scale(20);
+    opacity: 0.3;
+}
+
+.create-report-btn {
+    position: fixed;
+    right: 1rem;
+    bottom: calc(var(--bottom-nav-height) + 4rem);
+    z-index: 40;
+    width: 3.5rem;
+    height: 3.5rem;
+    background: #16a34a;  /* green-600 */
+    color: white;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease;
+}
+
+.create-report-btn:active {
+    transform: scale(0.95);
+}
+
+.create-report-btn.map-active {
+    transform: translateY(-50vh);
+}
+
+.report-card:active {
+    transform: scale(0.98);
+}
